@@ -1,0 +1,27 @@
+{
+  "name": "metrics-influxdb",
+  "version": "0.0.1",
+  "description": "InfluxDB backend integration for metrics",
+  "main": "lib/metrics-influxdb.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brandonhamilton/metrics-influxdb.git"
+  },
+  "author": "Brandon Hamilton <brandon.hamilton@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "metrics",
+    "influxdb"
+  ],
+  "peerDependencies": {
+    "metrics": "0.1.x"
+  },
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "metrics": "^0.1.9",
+    "mocha": "^2.3.4"
+  }
+}
