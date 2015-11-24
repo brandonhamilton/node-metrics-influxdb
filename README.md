@@ -18,7 +18,7 @@ A node.js InfluxDB v0.9 reporting backend for [metrics](https://www.npmjs.com/pa
 var metrics = require('metrics'),
     InfluxReporter = require('metrics-influxdb');
 
-var reporter = new InfluxReporter({ protocol: 'udp' });
+var reporter = new InfluxReporter({ protocol: 'udp', tags: { 'server': 'one' } });
 reporter.addMetric(new metrics.Counter());
 
 reporter.report(); // Send metrics to InfluxDB
@@ -51,10 +51,22 @@ The ``options`` object accepts the following fields:
     <td>InfluxDB protocol (<code>udp</code> / <code>http</code>)</td>
   </tr>
   <tr>
-    <th>batchSize</th>
-    <td>integer</td>
-    <td><code>100</code></td>
-    <td>InfluxDB maximum batch size per write</td>
+    <th>tags</th>
+    <td>object</td>
+    <td><code>{}</code></td>
+    <td>Tags to add to influxdb measurements</td>
+  </tr>
+  <tr>
+    <th>host</th>
+    <td>string</td>
+    <td><code>127.0.0.1</code></td>
+    <td>InfluxDB host</td>
+  </tr>
+  <tr>
+    <th>skipIdleMetrics</th>
+    <td>boolean</td>
+    <td><code>false</code></td>
+    <td>Suppress sending of metrics if there has been no new updates from previous report</td>
   </tr>
 </table>
 
