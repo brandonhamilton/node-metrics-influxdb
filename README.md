@@ -57,10 +57,10 @@ The ``options`` object accepts the following fields:
     <td>Tags to add to influxdb measurements</td>
   </tr>
   <tr>
-    <th>host</th>
+    <th>precision</th>
     <td>string</td>
-    <td><code>127.0.0.1</code></td>
-    <td>InfluxDB host</td>
+    <td><code>n</code></td>
+    <td><code>n</code>/<code>u</code>/<code>ms</code>/<code>s</code>/<code>m</code>/<code>h</code></td>
   </tr>
   <tr>
     <th>skipIdleMetrics</th>
@@ -105,6 +105,12 @@ The <code>http</code> protocol accepts the following additional options:
     <td>string</td>
     <td><code>null</code></td>
     <td>InfluxDB database</td>
+  </tr>
+  <tr>
+    <th>consistency</th>
+    <td>string</td>
+    <td><code>null</code></td>
+    <td><code>one</code>/<code>quorum</code>/<code>all</code>/<code>any</code></td>
   </tr>
 </table>
 
