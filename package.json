@@ -1,6 +1,6 @@
 {
   "name": "metrics-influxdb",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "InfluxDB backend integration for metrics",
   "main": "lib/reporter.js",
   "scripts": {
