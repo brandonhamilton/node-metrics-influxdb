@@ -57,6 +57,14 @@ The ``options`` object accepts the following fields:
     <td>Tags to add to influxdb measurements</td>
   </tr>
   <tr>
+    <th>tagger</th>
+    <td>function</td>
+    <td><code>none</code></td>
+    <td>Function invoked with the metric key and expected to return the tags for
+    it in the form <code>{tag1: value1, tag2: value2, ...}</code>
+        </td>
+  </tr>
+  <tr>
     <th>precision</th>
     <td>string</td>
     <td><code>n</code></td>
