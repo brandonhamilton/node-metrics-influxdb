@@ -20,8 +20,8 @@
     "metrics": "0.1.x"
   },
   "devDependencies": {
-    "chai": "^3.4.1",
+    "chai": "^3.5.0",
     "metrics": "^0.1.9",
-    "mocha": "^2.3.4"
+    "mocha": "^2.4.5"
   }
 }
