@@ -34,11 +34,28 @@ describe('reporter', function() {
     var secondCounter = new metrics.Counter();
     firstCounter.inc();
     reporter.addMetric('test.one.counter', firstCounter);
-    reporter.addMetric('test.two.counter', secondCounter);    
+    reporter.addMetric('test.two.counter', secondCounter);
     reporter.report(true);
     expect(reporter._influx.points).to.have.length(2);
     expect(reporter._influx.points[0]).to.have.string('test.one.counter count=1i');
     expect(reporter._influx.points[1]).to.have.string('test.two.counter count=0i');
+    done();
+  });
+
+  it('should add tags', function(done){
+    var reporter = new Reporter({
+        protocol: 'udp',
+        tags: { tag0: "default" },
+        tagger: function (key) {
+            var dimensions = key.split(".");
+            return { dim1: dimensions[0], dim2: dimensions[1] };
+        }
+    });
+    expect(reporter).to.be.defined;
+    reporter.addMetric('my.counter', new metrics.Counter());
+    reporter.report(true);
+    expect(reporter._influx.points).to.have.length(1);
+    expect(reporter._influx.points[0]).to.have.string('my.counter,dim1=my,dim2=counter,tag0=default count=0i');
     done();
   });
 
