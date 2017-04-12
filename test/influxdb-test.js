@@ -5,6 +5,7 @@
 
 var metrics = require('metrics'),
     Reporter = require("../lib/reporter"),
+    Gauge = require("../lib/gauge"),
     expect = require('chai').expect;
 
 describe('influxdb', function() {
@@ -19,6 +20,23 @@ describe('influxdb', function() {
     expect(reporter._influx.points).to.have.length(1);
     expect(reporter._influx.points[0]).to.have.string('test.counter count=1i');
     done();
+  });
+
+  it('should correctly serialize a gauge', function(done){
+    var reporter = new Reporter({ protocol: 'udp' });
+    expect(reporter).to.be.defined;
+    var g = new Gauge();
+    reporter.addMetric('test.gauge', g);
+    g.set(10);
+    g.set(15);
+    expect(g.points).to.have.length(2);
+    reporter.report(true);
+    expect(reporter._influx.points).to.have.length(2);
+    expect(reporter._influx.points[0]).to.have.string('test.gauge count=10i');
+    expect(reporter._influx.points[0]).to.have.string('test.gauge count=10i');
+    expect(reporter._influx.points[1]).to.have.string('test.gauge count=15i');
+    done();
+
   });
 
   it('should correctly serialize a meter', function(done){
