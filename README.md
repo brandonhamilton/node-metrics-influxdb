@@ -19,7 +19,9 @@ var metrics = require('metrics'),
     InfluxReporter = require('metrics-influxdb');
 
 var reporter = new InfluxReporter({ protocol: 'udp', tags: { 'server': 'one' } });
-reporter.addMetric(new metrics.Counter());
+var counter = new metrics.Counter();
+reporter.addMetric(counter);
+counter.inc(1);
 
 reporter.report(); // Send metrics to InfluxDB
 ```
