@@ -18,13 +18,31 @@ A node.js InfluxDB v0.9 reporting backend for [metrics](https://www.npmjs.com/pa
 var InfluxMetrics = require('metrics-influxdb');
 
 var reporter = new InfluxMetrics.Reporter({ protocol: 'udp', tags: { 'server': 'one' } });
-var counter = new InfluxMetrics.Counter();
-reporter.addMetric(counter);
-counter.inc(1);
+var c = new InfluxMetrics.Counter();
+reporter.addMetric('test.counter', c);
+c.inc();
+
+var g = new InfluxMetrics.Gauge();
+reporter.addMetric('test.gauge', g);
+g.set(10);
+
+var h = new InfluxMetrics.Histogram();
+reporter.addMetric('test.histogram', h);
+h.update(50);
+
+var m = new InfluxMetrics.Meter();
+reporter.addMetric('test.meter', m);
+m.mark(1);
+
+var t = new InfluxMetrics.Timer();
+reporter.addMetric('test.timer', t);
+t.update(50);
 
 reporter.report(); // Send metrics to InfluxDB
-reporter.report(true); // Flushes all metrics despite buffer
-reporter.report(false); // Prevents flush of metrics
+reporter.report(false); // Force flush of all metrics in buffer
+
+reporter.start(1000) // Schedule report to be run every 1000 ms (also available through options)
+reporter.stop() // Stop scheduled reporter 
 ```
 
 ## Configuration
@@ -148,7 +166,6 @@ The <code>http</code> protocol accepts the following additional options:
 ## Todo
 
 - [ ] Expose errors in http/udp transport
-- [ ] Implement scheduled reporting
 
 ## Credits
 

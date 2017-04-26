@@ -50,7 +50,7 @@ describe('influxdb', function() {
     expect(reporter).to.be.defined;
     var m = new InfluxMetrics.Meter();
     reporter.addMetric('test.meter', m);
-    m.mark();
+    m.mark(1);
     reporter.report(true);
     expect(reporter._influx.points).to.have.length(1);
     expect(reporter._influx.points[0]).to.have.string('test.meter count=1i');
