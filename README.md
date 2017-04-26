@@ -15,11 +15,10 @@ A node.js InfluxDB v0.9 reporting backend for [metrics](https://www.npmjs.com/pa
 ```javascript
 "use strict";
 
-var metrics = require('metrics'),
-    InfluxReporter = require('metrics-influxdb');
+var InfluxMetrics = require('metrics-influxdb');
 
-var reporter = new InfluxReporter({ protocol: 'udp', tags: { 'server': 'one' } });
-var counter = new metrics.Counter();
+var reporter = new InfluxMetrics.Reporter({ protocol: 'udp', tags: { 'server': 'one' } });
+var counter = new InfluxMetrics.Counter();
 reporter.addMetric(counter);
 counter.inc(1);
 

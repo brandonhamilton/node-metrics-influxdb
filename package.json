@@ -2,7 +2,7 @@
   "name": "metrics-influxdb",
   "version": "0.0.7",
   "description": "InfluxDB backend integration for metrics",
-  "main": "lib/reporter.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec"
   },

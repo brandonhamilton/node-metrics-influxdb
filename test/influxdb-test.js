@@ -3,17 +3,15 @@
  * Description: Test script for the metrics-influxdb influx module
  */
 
-var metrics = require('metrics'),
-    Reporter = require("../lib/reporter"),
-    Gauge = require("../lib/gauge"),
+var InfluxMetrics = require("../lib/index"),
     expect = require('chai').expect;
 
 describe('influxdb', function() {
 
   it('should correctly serialize a counter', function(done){
-    var reporter = new Reporter({ protocol: 'udp' });
+    var reporter = new InfluxMetrics.Reporter({ protocol: 'udp' });
     expect(reporter).to.be.defined;
-    var c = new metrics.Counter();
+    var c = new InfluxMetrics.Counter();
     reporter.addMetric('test.counter', c);
     c.inc();
     reporter.report(true);
@@ -23,9 +21,9 @@ describe('influxdb', function() {
   });
 
   it('should correctly serialize a gauge', function(done){
-    var reporter = new Reporter({ protocol: 'udp' });
+    var reporter = new InfluxMetrics.Reporter({ protocol: 'udp' });
     expect(reporter).to.be.defined;
-    var g = new Gauge();
+    var g = new InfluxMetrics.Gauge();
     reporter.addMetric('test.gauge', g);
     g.set(10);
     g.set(15);
@@ -40,9 +38,9 @@ describe('influxdb', function() {
   });
 
   it('should correctly serialize a meter', function(done){
-    var reporter = new Reporter({ protocol: 'udp' });
+    var reporter = new InfluxMetrics.Reporter({ protocol: 'udp' });
     expect(reporter).to.be.defined;
-    var m = new metrics.Meter();
+    var m = new InfluxMetrics.Meter();
     reporter.addMetric('test.meter', m);
     m.mark();
     reporter.report(true);
@@ -56,9 +54,9 @@ describe('influxdb', function() {
   });
 
   it('should correctly serialize a histogram', function(done){
-    var reporter = new Reporter({ protocol: 'udp' });
+    var reporter = new InfluxMetrics.Reporter({ protocol: 'udp' });
     expect(reporter).to.be.defined;
-    var h = new metrics.Histogram();
+    var h = new InfluxMetrics.Histogram();
     reporter.addMetric('test.histogram', h);
     h.update(50);
     h.update(100);
@@ -81,9 +79,9 @@ describe('influxdb', function() {
   });
 
   it('should correctly serialize a timer', function(done){
-    var reporter = new Reporter({ protocol: 'udp' });
+    var reporter = new InfluxMetrics.Reporter({ protocol: 'udp' });
     expect(reporter).to.be.defined;
-    var t = new metrics.Timer();
+    var t = new InfluxMetrics.Timer();
     reporter.addMetric('test.timer', t);
     t.update(50);
     t.update(100);
