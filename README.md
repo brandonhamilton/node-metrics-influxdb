@@ -109,12 +109,6 @@ The ``options`` object accepts the following fields:
     <td><code>false</code></td>
     <td>Suppress sending of metrics if there has been no new updates from previous report</td>
   </tr>
-  <tr>
-    <th>httpTimeout</th>    
-    <td>number</td>
-    <td><code>200</code></td>
-    <td>http Timeout ms</td>
-  </tr>
 </table>
 
 The <code>udp</code> protocol accepts the following additional options:
@@ -158,6 +152,12 @@ The <code>http</code> protocol accepts the following additional options:
     <td>string</td>
     <td><code>null</code></td>
     <td><code>one</code>/<code>quorum</code>/<code>all</code>/<code>any</code></td>
+  </tr>
+  <tr>
+    <th>httpTimeout</th>    
+    <td>number</td>
+    <td><code>200</code></td>
+    <td>http Timeout ms</td>
   </tr>
 </table>
 
