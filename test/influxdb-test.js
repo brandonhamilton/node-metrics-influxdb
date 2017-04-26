@@ -31,8 +31,16 @@ describe('influxdb', function() {
     reporter.report(true);
     expect(reporter._influx.points).to.have.length(2);
     expect(reporter._influx.points[0]).to.have.string('test.gauge count=10i');
+    expect(reporter._influx.points[1]).to.have.string('test.gauge count=15i');
+
+    g.set(12);
+    reporter.report(true);
     expect(reporter._influx.points[0]).to.have.string('test.gauge count=10i');
     expect(reporter._influx.points[1]).to.have.string('test.gauge count=15i');
+    expect(reporter._influx.points[2]).to.have.string('test.gauge count=12i');
+    expect(reporter._influx.points).to.have.length(3);
+    
+    reporter.report(true);
     done();
 
   });
