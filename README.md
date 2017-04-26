@@ -23,6 +23,8 @@ reporter.addMetric(counter);
 counter.inc(1);
 
 reporter.report(); // Send metrics to InfluxDB
+reporter.report(true); // Flushes all metrics despite buffer
+reporter.report(false); // Prevents flush of metrics
 ```
 
 ## Configuration
@@ -70,6 +72,18 @@ The ``options`` object accepts the following fields:
     <td>string</td>
     <td><code>n</code></td>
     <td><code>n</code>/<code>u</code>/<code>ms</code>/<code>s</code>/<code>m</code>/<code>h</code></td>
+  </tr>
+  <tr>
+    <th>bufferSize</th>
+    <td>number</td>
+    <td><code>0</code></td>
+    <td>Number of points to keep before sending to InfluxDB</td>
+  </tr>
+  <tr>
+    <th>scheduleInterval</th>
+    <td>number</td>
+    <td><code>null</code></td>
+    <td>This is the time in ms to flush any buffered metrics</td>
   </tr>
   <tr>
     <th>skipIdleMetrics</th>
