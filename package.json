@@ -1,6 +1,6 @@
 {
   "name": "metrics-influxdb",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "description": "InfluxDB backend integration for metrics",
   "main": "lib/index.js",
   "scripts": {
@@ -16,12 +16,11 @@
     "metrics",
     "influxdb"
   ],
-  "peerDependencies": {
-    "metrics": "0.1.x"
-  },
   "devDependencies": {
     "chai": "^3.5.0",
-    "metrics": "^0.1.9",
-    "mocha": "^2.4.5"
+    "mocha": "^3.3.0"
+  },
+  "dependencies": {
+    "metrics": "^0.1.11"
   }
 }
