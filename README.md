@@ -15,13 +15,34 @@ A node.js InfluxDB v0.9 reporting backend for [metrics](https://www.npmjs.com/pa
 ```javascript
 "use strict";
 
-var metrics = require('metrics'),
-    InfluxReporter = require('metrics-influxdb');
+var InfluxMetrics = require('metrics-influxdb');
 
-var reporter = new InfluxReporter({ protocol: 'udp', tags: { 'server': 'one' } });
-reporter.addMetric(new metrics.Counter());
+var reporter = new InfluxMetrics.Reporter({ protocol: 'udp', tags: { 'server': 'one' } });
+var c = new InfluxMetrics.Counter();
+reporter.addMetric('test.counter', c);
+c.inc();
+
+var g = new InfluxMetrics.Gauge();
+reporter.addMetric('test.gauge', g);
+g.set(10);
+
+var h = new InfluxMetrics.Histogram();
+reporter.addMetric('test.histogram', h);
+h.update(50);
+
+var m = new InfluxMetrics.Meter();
+reporter.addMetric('test.meter', m);
+m.mark(1);
+
+var t = new InfluxMetrics.Timer();
+reporter.addMetric('test.timer', t);
+t.update(50);
 
 reporter.report(); // Send metrics to InfluxDB
+reporter.report(false); // Force flush of all metrics in buffer
+
+reporter.start(1000) // Schedule report to be run every 1000 ms (also available through options)
+reporter.stop() // Stop scheduled reporter 
 ```
 
 ## Configuration
@@ -69,6 +90,18 @@ The ``options`` object accepts the following fields:
     <td>string</td>
     <td><code>n</code></td>
     <td><code>n</code>/<code>u</code>/<code>ms</code>/<code>s</code>/<code>m</code>/<code>h</code></td>
+  </tr>
+  <tr>
+    <th>bufferSize</th>
+    <td>number</td>
+    <td><code>0</code></td>
+    <td>Number of points to keep before sending to InfluxDB</td>
+  </tr>
+  <tr>
+    <th>scheduleInterval</th>
+    <td>number</td>
+    <td><code>null</code></td>
+    <td>This is the time in ms to flush any buffered metrics</td>
   </tr>
   <tr>
     <th>skipIdleMetrics</th>
@@ -120,6 +153,12 @@ The <code>http</code> protocol accepts the following additional options:
     <td><code>null</code></td>
     <td><code>one</code>/<code>quorum</code>/<code>all</code>/<code>any</code></td>
   </tr>
+  <tr>
+    <th>httpTimeout</th>    
+    <td>number</td>
+    <td><code>200</code></td>
+    <td>http Timeout ms</td>
+  </tr>
 </table>
 
 </table>
@@ -127,7 +166,6 @@ The <code>http</code> protocol accepts the following additional options:
 ## Todo
 
 - [ ] Expose errors in http/udp transport
-- [ ] Implement scheduled reporting
 
 ## Credits
 
