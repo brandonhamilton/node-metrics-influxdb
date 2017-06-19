@@ -10,7 +10,7 @@ describe('influxdb', function() {
 
   it('should correctly serialize a counter', function(done){
     var reporter = new InfluxMetrics.Reporter({ protocol: 'udp', bufferSize: 100 });
-    expect(reporter).to.be.defined;
+    expect(reporter).to.be.an.instanceof(InfluxMetrics.Reporter);
     var c = new InfluxMetrics.Counter();
     reporter.addMetric('test.counter', c);
     c.inc();
@@ -22,7 +22,7 @@ describe('influxdb', function() {
 
   it('should correctly serialize a gauge', function(done){
     var reporter = new InfluxMetrics.Reporter({ protocol: 'udp', bufferSize: 100 });
-    expect(reporter).to.be.defined;
+    expect(reporter).to.be.an.instanceof(InfluxMetrics.Reporter);
     var g = new InfluxMetrics.Gauge();
     reporter.addMetric('test.gauge', g);
     g.set(10);
@@ -47,7 +47,7 @@ describe('influxdb', function() {
 
   it('should correctly serialize a meter', function(done){
     var reporter = new InfluxMetrics.Reporter({ protocol: 'udp', bufferSize: 100 });
-    expect(reporter).to.be.defined;
+    expect(reporter).to.be.an.instanceof(InfluxMetrics.Reporter);
     var m = new InfluxMetrics.Meter();
     reporter.addMetric('test.meter', m);
     m.mark(1);
@@ -63,7 +63,7 @@ describe('influxdb', function() {
 
   it('should correctly serialize a histogram', function(done){
     var reporter = new InfluxMetrics.Reporter({ protocol: 'udp', bufferSize: 100 });
-    expect(reporter).to.be.defined;
+    expect(reporter).to.be.an.instanceof(InfluxMetrics.Reporter);
     var h = new InfluxMetrics.Histogram();
     reporter.addMetric('test.histogram', h);
     h.update(50);
@@ -88,7 +88,7 @@ describe('influxdb', function() {
 
   it('should correctly serialize a timer', function(done){
     var reporter = new InfluxMetrics.Reporter({ protocol: 'udp', bufferSize: 100 });
-    expect(reporter).to.be.defined;
+    expect(reporter).to.be.an.instanceof(InfluxMetrics.Reporter);
     var t = new InfluxMetrics.Timer();
     reporter.addMetric('test.timer', t);
     t.update(50);

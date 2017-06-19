@@ -11,7 +11,7 @@ describe('reporter', function() {
 
   it('should create an empty report without any metrics', function(done){
     var reporter = new InfluxMetrics.Reporter({ protocol: 'udp', bufferSize: 100 });
-    expect(reporter).to.be.defined;
+    expect(reporter).to.be.an.instanceof(InfluxMetrics.Reporter);
     reporter.report(true);
     expect(reporter._influx.points).to.be.empty;
     done();
@@ -19,7 +19,7 @@ describe('reporter', function() {
 
   it('should create a valid report with a single metric', function(done){
     var reporter = new InfluxMetrics.Reporter({ protocol: 'udp', bufferSize: 100 });
-    expect(reporter).to.be.defined;
+    expect(reporter).to.be.an.instanceof(InfluxMetrics.Reporter);
     reporter.addMetric('test.counter', new metrics.Counter());
     reporter.report(true);
     expect(reporter._influx.points).to.have.length(1);
@@ -29,7 +29,7 @@ describe('reporter', function() {
 
   it('should create a valid report with multiple metrics', function(done){
     var reporter = new InfluxMetrics.Reporter({ protocol: 'udp', bufferSize: 100 });
-    expect(reporter).to.be.defined;
+    expect(reporter).to.be.an.instanceof(InfluxMetrics.Reporter);
     var firstCounter = new InfluxMetrics.Counter();
     var secondCounter = new InfluxMetrics.Counter();
     firstCounter.inc();
@@ -52,7 +52,7 @@ describe('reporter', function() {
         }, 
         bufferSize: 100
     });
-    expect(reporter).to.be.defined;
+    expect(reporter).to.be.an.instanceof(InfluxMetrics.Reporter);
     reporter.addMetric('my.counter', new InfluxMetrics.Counter());
     reporter.report(true);
     expect(reporter._influx.points).to.have.length(1);
@@ -66,7 +66,7 @@ describe('reporter', function() {
         tags: { tag0: "default" },
         bufferSize: 100
     });
-    expect(reporter).to.be.defined;
+    expect(reporter).to.be.an.instanceof(InfluxMetrics.Reporter);
     var gauge = new InfluxMetrics.Gauge();
     reporter.addMetric('my.gauge', gauge);
     gauge.set(4, { tag1: "gaugeTag" })
@@ -78,7 +78,7 @@ describe('reporter', function() {
 
   it('should report on schedule when scheduleInterval is set', function(done){
     var reporter = new InfluxMetrics.Reporter({ protocol: 'udp', scheduleInterval: '10', bufferSize: 100});
-    expect(reporter).to.be.defined;
+    expect(reporter).to.be.an.instanceof(InfluxMetrics.Reporter);
     reporter.addMetric('test2.counter', new metrics.Counter());
     expect(reporter._influx.points).to.have.length(0);
     setTimeout(function() {
@@ -92,7 +92,7 @@ describe('reporter', function() {
   
   it('should report on schedule when scheduleInterval start is called and stop when stop is called', function(done){
     var reporter = new InfluxMetrics.Reporter({ protocol: 'udp', bufferSize: 100});
-    expect(reporter).to.be.defined;
+    expect(reporter).to.be.an.instanceof(InfluxMetrics.Reporter);
     reporter.addMetric('test1.counter', new metrics.Counter());
     expect(reporter._influx.points).to.have.length(0);
     setTimeout(function() {
