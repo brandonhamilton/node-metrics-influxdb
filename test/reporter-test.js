@@ -60,6 +60,22 @@ describe('reporter', function() {
     done();
   });
 
+  it('should add tags for gauge', function(done){
+    var reporter = new InfluxMetrics.Reporter({
+        protocol: 'udp',
+        tags: { tag0: "default" },
+        bufferSize: 100
+    });
+    expect(reporter).to.be.defined;
+    var gauge = new InfluxMetrics.Gauge();
+    reporter.addMetric('my.gauge', gauge);
+    gauge.set(4, { tag1: "gaugeTag" })
+    reporter.report(true);
+    expect(reporter._influx.points).to.have.length(1);
+    expect(reporter._influx.points[0]).to.have.string('my.gauge,tag0=default,tag1=gaugeTag count=4i');
+    done();
+  });
+
   it('should report on schedule when scheduleInterval is set', function(done){
     var reporter = new InfluxMetrics.Reporter({ protocol: 'udp', scheduleInterval: '10', bufferSize: 100});
     expect(reporter).to.be.defined;
