@@ -86,6 +86,13 @@ The ``options`` object accepts the following fields:
         </td>
   </tr>
   <tr>
+    <th>namer</th>
+    <td>function</td>
+    <td><code>identity</code></td>
+    <td>Function invoked with the metric key and expected to return the desired name of the metric in InfluxDB</code>
+        </td>
+  </tr>
+  <tr>
     <th>metricReportedHook</th>
     <td>function</td>
     <td><code>none</code></td>
