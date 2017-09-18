@@ -109,6 +109,12 @@ The ``options`` object accepts the following fields:
     <td><code>false</code></td>
     <td>Suppress sending of metrics if there has been no new updates from previous report</td>
   </tr>
+  <tr>
+    <th>callback</th>
+    <td>function</td>
+    <td><code>none</code></td>
+    <td>A standard Node callback invoked with the result of the InfluxDB call (nothing or an `Error`).</td>
+  </tr>
 </table>
 
 The <code>udp</code> protocol accepts the following additional options:
