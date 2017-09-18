@@ -4,9 +4,22 @@
  */
 
 var InfluxMetrics = require("../lib/index"),
-    expect = require('chai').expect;
+    expect = require('chai').expect,
+    sinon = require('sinon');
 
 describe('influxdb', function() {
+
+  var clock;
+
+  before(function () {
+    // We need to control time since e.g. Metric's mean depends on it
+      // (being Infinity if no time elapsed)
+    clock = sinon.useFakeTimers();
+  });
+
+  after(function () {
+      clock.restore();
+  });
 
   it('should correctly serialize a counter', function(done){
     var reporter = new InfluxMetrics.Reporter({ protocol: 'udp', bufferSize: 100 });
@@ -14,6 +27,7 @@ describe('influxdb', function() {
     var c = new InfluxMetrics.Counter();
     reporter.addMetric('test.counter', c);
     c.inc();
+    clock.tick(1);
     reporter.report(true);
     expect(reporter._influx.points).to.have.length(1);
     expect(reporter._influx.points[0]).to.have.string('test.counter count=1i');
@@ -28,18 +42,21 @@ describe('influxdb', function() {
     g.set(10);
     g.set(15);
     expect(g.points).to.have.length(2);
+    clock.tick(1);
     reporter.report(true);
     expect(reporter._influx.points).to.have.length(2);
     expect(reporter._influx.points[0]).to.have.string('test.gauge count=10i');
     expect(reporter._influx.points[1]).to.have.string('test.gauge count=15i');
 
     g.set(12);
+    clock.tick(1);
     reporter.report(true);
     expect(reporter._influx.points[0]).to.have.string('test.gauge count=10i');
     expect(reporter._influx.points[1]).to.have.string('test.gauge count=15i');
     expect(reporter._influx.points[2]).to.have.string('test.gauge count=12i');
     expect(reporter._influx.points).to.have.length(3);
-    
+
+    clock.tick(1);
     reporter.report(true);
     done();
 
@@ -51,6 +68,7 @@ describe('influxdb', function() {
     var m = new InfluxMetrics.Meter();
     reporter.addMetric('test.meter', m);
     m.mark(1);
+    clock.tick(1);
     reporter.report(true);
     expect(reporter._influx.points).to.have.length(1);
     expect(reporter._influx.points[0]).to.have.string('test.meter count=1i');
@@ -68,6 +86,7 @@ describe('influxdb', function() {
     reporter.addMetric('test.histogram', h);
     h.update(50);
     h.update(100);
+    clock.tick(1);
     reporter.report(true);
     expect(reporter._influx.points).to.have.length(1);
     expect(reporter._influx.points[0]).to.have.string('test.histogram ');
@@ -93,6 +112,7 @@ describe('influxdb', function() {
     reporter.addMetric('test.timer', t);
     t.update(50);
     t.update(100);
+    clock.tick(1);
     reporter.report(true);
     expect(reporter._influx.points).to.have.length(1);
     expect(reporter._influx.points[0]).to.have.string('test.timer ');
