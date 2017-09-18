@@ -64,6 +64,10 @@ describe('reporter', function() {
     var reporter = new InfluxMetrics.Reporter({
         protocol: 'udp',
         tags: { tag0: "default" },
+        tagger: function (key) {
+          var dimensions = key.split(".");
+          return { dim1: dimensions[0], dim2: dimensions[1] };
+        },
         bufferSize: 100
     });
     expect(reporter).to.be.an.instanceof(InfluxMetrics.Reporter);
@@ -72,8 +76,96 @@ describe('reporter', function() {
     gauge.set(4, { tag1: "gaugeTag" })
     reporter.report(true);
     expect(reporter._influx.points).to.have.length(1);
-    expect(reporter._influx.points[0]).to.have.string('my.gauge,tag0=default,tag1=gaugeTag count=4i');
+    expect(reporter._influx.points[0]).to.have.string('my.gauge,dim1=my,dim2=gauge,tag0=default,tag1=gaugeTag count=4i');
     done();
+  });
+
+  it('should set custom name if namer provided', function(done){
+    var reporter = new InfluxMetrics.Reporter({
+      protocol: 'udp',
+      tags: { tag0: "default" },
+      tagger: function (key) {
+        var dimensions = key.split(".");
+        return { dim1: dimensions[0], dim2: dimensions[1] };
+      },
+      namer: function (key, tags) {
+        return "CUSTOM_" + tags.dim2;
+      },
+      bufferSize: 100
+    });
+    expect(reporter).to.be.an.instanceof(InfluxMetrics.Reporter);
+    reporter.addMetric('my.counter', new InfluxMetrics.Counter());
+    reporter.report(true);
+    expect(reporter._influx.points).to.have.length(1);
+    expect(reporter._influx.points[0]).to.have.string('CUSTOM_counter,dim1=my,dim2=counter,tag0=default count=0i');
+    done();
+  });
+
+  it('should set custom name for a gauge if namer provided', function(done){
+    var reporter = new InfluxMetrics.Reporter({
+      protocol: 'udp',
+      tagger: function (key) {
+        var dimensions = key.split(".");
+        return { dim1: dimensions[0], dim2: dimensions[1] };
+      },
+      namer: function (key, tags) {
+        return "CUSTOM_" + tags.dim2;
+      },
+      bufferSize: 100
+    });
+    expect(reporter).to.be.an.instanceof(InfluxMetrics.Reporter);
+    var gauge = new InfluxMetrics.Gauge();
+    reporter.addMetric('my.gauge', gauge);
+    gauge.set(4, { tag1: "gaugeTag" })
+    reporter.report(true);
+    expect(reporter._influx.points).to.have.length(1);
+    expect(reporter._influx.points[0]).to.have.string('CUSTOM_gauge,dim1=my,dim2=gauge,tag1=gaugeTag count=4i');
+    done();
+  });
+
+  describe("metricReportedHook", function() {
+
+    it('should be called after a metric has been reported', function(done){
+      var metricReportedHookCalledFor = false;
+      var metricReported = null;
+      var reporter = new InfluxMetrics.Reporter({
+        protocol: 'udp',
+        metricReportedHook: function (key, metric) {
+          metricReportedHookCalledFor = key;
+          metricReported = metric;
+        },
+        bufferSize: 100
+      });
+      expect(reporter).to.be.an.instanceof(InfluxMetrics.Reporter);
+      var metric = new InfluxMetrics.Counter();
+      reporter.addMetric('my.counter', metric);
+      reporter.report(true);
+      expect(metricReportedHookCalledFor).to.equal('my.counter');
+      expect(metricReported).to.equal(metric);
+      done();
+    });
+
+    it('should be called after a gauge has been reported', function(done){
+      var metricReportedHookCalledFor = false;
+      var metricReported = null;
+      var reporter = new InfluxMetrics.Reporter({
+        protocol: 'udp',
+        metricReportedHook: function (key, metric) {
+          metricReportedHookCalledFor = key;
+          metricReported = metric;
+        },
+        bufferSize: 100
+      });
+      expect(reporter).to.be.an.instanceof(InfluxMetrics.Reporter);
+      var gauge = new InfluxMetrics.Gauge();
+      reporter.addMetric('my.gauge', gauge);
+      gauge.set(4)
+      reporter.report(true);
+      expect(metricReportedHookCalledFor).to.equal('my.gauge');
+      expect(metricReported).to.equal(gauge);
+      done();
+    });
+
   });
 
   it('should report on schedule when scheduleInterval is set', function(done){
