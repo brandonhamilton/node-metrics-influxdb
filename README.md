@@ -86,6 +86,12 @@ The ``options`` object accepts the following fields:
         </td>
   </tr>
   <tr>
+    <th>metricReportedHook</th>
+    <td>function</td>
+    <td><code>none</code></td>
+    <td>Function invoked with `(metric key, Metric)` after it has been reported - so that the user can f.ex. `.clear()` counters.</td>
+  </tr>
+  <tr>
     <th>precision</th>
     <td>string</td>
     <td><code>n</code></td>
