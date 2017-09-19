@@ -182,10 +182,6 @@ The <code>http</code> protocol accepts the following additional options:
 
 </table>
 
-## Todo
-
-- [ ] Expose errors in http/udp transport
-
 ## Credits
 
 This module is based on [metrics-influxdb](https://github.com/dropwizard/metrics) by dropwizard.
