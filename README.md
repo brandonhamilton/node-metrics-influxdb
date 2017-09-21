@@ -101,7 +101,7 @@ The ``options`` object accepts the following fields:
   <tr>
     <th>precision</th>
     <td>string</td>
-    <td><code>n</code></td>
+    <td><code>ms</code></td>
     <td><code>n</code>/<code>u</code>/<code>ms</code>/<code>s</code>/<code>m</code>/<code>h</code></td>
   </tr>
   <tr>
