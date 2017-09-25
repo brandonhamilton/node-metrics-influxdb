@@ -182,6 +182,69 @@ The <code>http</code> protocol accepts the following additional options:
 
 </table>
 
+## A more complex example
+
+```javascript
+const InfluxMetrics = require('metrics-influxdb');
+const options = {
+    host: "my.influxdb.example.com",
+    port: 8086,
+    protocol: "http",
+    username: "the monitor",
+    password: "super sercret",
+    database: "app_metrics",
+    tags: {
+        app: "my-awesome-app",
+        environment: "production"
+    },
+    callback(error) {
+        if (error) {
+            console.log("Sending data to InfluxDB failed: ", error);
+        }
+    },
+    /* Given a key like "type=system.area=memory.metric=heapUsed"
+     * produce `{ type: "system", area: "memory", metric: "heapUsed" }`
+     * so that these tags will be stored with the measure in InfluxDB
+     */
+    tagger: (metricKey) => _.chain(metricKey.split("."))
+        .map((tagVal) => {
+            const [_str, key, val] = tagVal.match(/(\w+)=(.+)/) || [];
+            if (!key || !val) {
+                console.log(`Expected format 'key=value[.key2=val2...]' but got the non-conforming part '${tagVal}'.`);
+                return undefined;
+            }
+            else return [key, val];
+        })
+        .reject(_.isUndefined)
+        .zipObject()
+        /* Replace " ,=" - see https://docs.influxdata.com/influxdb/v0.13/write_protocols/write_syntax/#escaping-characters */
+        .mapValues((value) => value.replace(/([ ,=])/g, "\\$1");)
+        .value(),
+    namer: (metricKey, tags) => {
+        // We need a user-friendly name for the metrics ("measurements" in InfluxDB) that do not contain dots
+        // as Grafana seems to have issues with those
+        if (tags.type && tags.metric) {
+            return tags.type + "_" + tags.metric;
+        }
+        return metricKey;
+    },
+    metricReportedHook: (key, metric) => {
+        // Reset metrics as InfluxDB will do the aggregation and we should thus only send it new values
+        if (metric.type === "counter") {
+            metric.clear();
+        }
+    }
+};
+
+const reporter = new InfluxMetrics.Reporter(options);
+
+const h = new InfluxMetrics.Histogram();
+reporter.addMetric('type=system.area=memory.metric=heapUsed', c);
+h.update(process.memoryUsage().heapUsed);
+
+reporter.start(1000);
+```
+
 ## Credits
 
 This module is based on [metrics-influxdb](https://github.com/dropwizard/metrics) by dropwizard.
