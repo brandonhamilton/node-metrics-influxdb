@@ -4,7 +4,7 @@
 [![Dependency Status](https://david-dm.org/brandonhamilton/node-metrics-influxdb.svg)](https://david-dm.org/brandonhamilton/node-metrics-influxdb)
 [![devDependency Status](https://david-dm.org/brandonhamilton/node-metrics-influxdb/dev-status.svg)](https://david-dm.org/brandonhamilton/node-metrics-influxdb#info=devDependencies)
 
-A node.js InfluxDB v0.9 reporting backend for [metrics](https://www.npmjs.com/package/metrics)
+A node.js InfluxDB v0.9 and higher reporting backend for [metrics](https://www.npmjs.com/package/metrics). (Tested at least with InfluxDB 0.9 and 0.12.)
 
 # Installation
 
