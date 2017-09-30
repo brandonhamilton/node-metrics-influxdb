@@ -5,9 +5,22 @@
 
 var metrics = require('metrics'),
     InfluxMetrics = require("../lib/index"),
-    expect = require('chai').expect;
+    expect = require('chai').expect,
+    sinon = require('sinon');
 
 describe('reporter', function() {
+
+  var clock;
+
+  before(function () {
+    // We need to control time since e.g. Metric's mean depends on it
+    // (being Infinity if no time elapsed)
+    clock = sinon.useFakeTimers();
+  });
+
+  after(function () {
+    clock.restore();
+  });
 
   it('should create an empty report without any metrics', function(done){
     var reporter = new InfluxMetrics.Reporter({ protocol: 'udp', bufferSize: 100 });
@@ -169,17 +182,15 @@ describe('reporter', function() {
   });
 
   it('should report on schedule when scheduleInterval is set', function(done){
-    var reporter = new InfluxMetrics.Reporter({ protocol: 'udp', scheduleInterval: '10', bufferSize: 100});
+    var reporter = new InfluxMetrics.Reporter({ protocol: 'udp', scheduleInterval: 10, bufferSize: 100});
     expect(reporter).to.be.an.instanceof(InfluxMetrics.Reporter);
     reporter.addMetric('test2.counter', new metrics.Counter());
     expect(reporter._influx.points).to.have.length(0);
-    setTimeout(function() {
-      expect(reporter._influx.points).to.have.length(1);
-      setTimeout(function() {
-        expect(reporter._influx.points).to.have.length(2);
-        done();
-      }, 10);
-    }, 10);
+    clock.tick(10);
+    expect(reporter._influx.points).to.have.length(1);
+    clock.tick(10);
+    expect(reporter._influx.points).to.have.length(2);
+    done();
   });
   
   it('should report on schedule when scheduleInterval start is called and stop when stop is called', function(done){
@@ -187,21 +198,105 @@ describe('reporter', function() {
     expect(reporter).to.be.an.instanceof(InfluxMetrics.Reporter);
     reporter.addMetric('test1.counter', new metrics.Counter());
     expect(reporter._influx.points).to.have.length(0);
-    setTimeout(function() {
+
+    expect(reporter._influx.points).to.have.length(0);
+    reporter.start(10, true);
+    clock.tick(10);
+
+    expect(reporter._influx.points).to.have.length(1);
+    clock.tick(10);
+
+    expect(reporter._influx.points).to.have.length(2);
+    reporter.stop();
+    clock.tick(10);
+
+    expect(reporter._influx.points).to.have.length(2);
+    done();
+  });
+
+  describe('fieldFilter', function(){
+
+    it('should remove fields via a field name-based fieldFilter', function(done){
+      var reporter = new InfluxMetrics.Reporter({
+        bufferSize: 100,
+        fieldFilter: function(key, metric, fieldName, fieldValue) {
+          if (key === "test.histo" && metric.type === "histogram") {
+            return ",count,max,mean,median,min,sum,".indexOf("," + fieldName + ",") >= 0;
+          }
+        }
+      });
+      var h = new InfluxMetrics.Histogram();
+      reporter.addMetric('test.histo', h);
+      h.update(100);
+      clock.tick(1);
+
+      reporter.report(true);
+
+      expect(reporter._influx.points).to.have.length(1);
+      expect(reporter._influx.points[0]).to.have.string('test.histo count=1i,max=100i,mean=100,median=100,min=100i,sum=100i');
+      done();
+    });
+
+    it('should remove Gauge points via a field value-based fieldFilter', function(done){
+      var reporter = new InfluxMetrics.Reporter({
+        bufferSize: 100,
+        fieldFilter: function(key, metric, fieldName, fieldValue) {
+          if (metric.type === "gauge") {
+            return fieldValue > 100;
+          }
+        }
+      });
+      var g = new InfluxMetrics.Gauge();
+      reporter.addMetric('test.gauge', g);
+      g.set(100);
+      g.set(200);
+      clock.tick(1);
+
+      reporter.report(true);
+
+      expect(reporter._influx.points).to.have.length(1);
+      expect(reporter._influx.points[0]).to.have.string('test.gauge count=200i ');
+      done();
+    });
+
+    it('should remove fields via a value-based fieldFilter', function(done){
+      var reporter = new InfluxMetrics.Reporter({
+        bufferSize: 100,
+        fieldFilter: function(key, metric, fieldName, fieldValue) {
+          return fieldValue === 1;
+        }
+      });
+      var t = new InfluxMetrics.Timer();
+      reporter.addMetric('test.timer', t);
+      t.update(100);
+      clock.tick(1);
+
+      reporter.report(true);
+
+      expect(reporter._influx.points).to.have.length(1);
+      expect(reporter._influx.points[0]).have.string('test.timer count=1i ');
+      done();
+    });
+
+
+    it('should not report a point with no fields', function(done){
+      var reporter = new InfluxMetrics.Reporter({
+        bufferSize: 100,
+        fieldFilter: function(key, metric, fieldName, fieldValue) {
+          return false;
+        }
+      });
+      var h = new InfluxMetrics.Histogram();
+      reporter.addMetric('test.histo', h);
+      h.update(100);
+      clock.tick(1);
+
+      reporter.report(true);
+
       expect(reporter._influx.points).to.have.length(0);
-      reporter.start(10, true);
-      setTimeout(function() {
-        expect(reporter._influx.points).to.have.length(1);
-        setTimeout(function() {
-          expect(reporter._influx.points).to.have.length(2);
-          reporter.stop();
-          setTimeout(function() {
-            expect(reporter._influx.points).to.have.length(2);
-            done();
-          }, 10);
-        }, 10);
-      }, 10);
-    }, 10);
+      done();
+    });
+
   });
 
 });
