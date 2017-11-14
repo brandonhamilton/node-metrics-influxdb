@@ -69,7 +69,7 @@ The ``options`` object accepts the following fields:
     <th>protocol</th>
     <td>string</td>
     <td><code>udp</code></td>
-    <td>InfluxDB protocol (<code>udp</code> / <code>http</code>)</td>
+    <td>InfluxDB protocol (<code>udp</code> / <code>http</code> / <code>https</code>)</td>
   </tr>
   <tr>
     <th>tags</th>
@@ -149,7 +149,7 @@ The <code>udp</code> protocol accepts the following additional options:
   </tr>
 </table>
 
-The <code>http</code> protocol accepts the following additional options:
+The <code>http</code> and <code>https</code> protocols accept the following additional options:
 <table>
   <tr>
     <th>Parameter</th><th>Type</th><th>Default</th><th>Description</th>
