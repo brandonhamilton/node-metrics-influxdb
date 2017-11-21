@@ -238,22 +238,22 @@ const options = {
         // Reset metrics as InfluxDB will do the aggregation and we should thus only send it new values
         metric.clear();
     },
-     fieldFilter: (key, metric, fieldName, fieldValue) => {
-         // Don't send unnecessary data to the DB to save CPU and disk space:
-         // don't send 0s (likely many, since we clear metrics after send) and
-         // various aggregated measures (percentiles etc.) since the DB will 
-         // aggregate for us (well, as best as possible given 1 min-summarized data)
-         if (metric.type === "histogram") {
-             return metric.count > 0 && ["count", "min", "max", "mean", "median"].includes(fieldName);
-         }
-         if (metric.type === "timer") {
-             return metric.duration.count > 0 && ["count", "min", "max", "mean", "median"].includes(fieldName);
-         }
-         if (metric.type === "counter") {
-             return fieldValue > 0;
-         }
-         return true;
-     }
+    fieldFilter: (key, metric, fieldName, fieldValue) => {
+        // Don't send unnecessary data to the DB to save CPU and disk space:
+        // don't send 0s (likely many, since we clear metrics after send) and
+        // various aggregated measures (percentiles etc.) since the DB will 
+        // aggregate for us (well, as best as possible given 1 min-summarized data)
+        if (metric.type === "histogram") {
+            return metric.count > 0 && ["count", "min", "max", "mean", "median"].includes(fieldName);
+        }
+        if (metric.type === "timer") {
+            return metric.duration.count > 0 && ["count", "min", "max", "mean", "median"].includes(fieldName);
+        }
+        if (metric.type === "counter") {
+            return fieldValue > 0;
+        }
+        return true;
+    }
 };
 
 const reporter = new InfluxMetrics.Reporter(options);
