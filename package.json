@@ -1,10 +1,10 @@
 {
   "name": "metrics-influxdb",
-  "version": "0.3.1",
+  "version": "1.0.0",
   "description": "InfluxDB backend integration for metrics",
   "main": "lib/index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec"
+    "test": "./node_modules/.bin/mocha --reporter spec --exit"
   },
   "repository": {
     "type": "git",
@@ -18,8 +18,8 @@
   ],
   "devDependencies": {
     "chai": "^4.1.2",
-    "mocha": "^3.5.3",
-    "sinon": "^4.0.0"
+    "mocha": "^4.0.1",
+    "sinon": "^4.1.2"
   },
   "dependencies": {
     "metrics": "^0.1.11"
