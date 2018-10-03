@@ -1,6 +1,6 @@
 # InfluxDB reporter for metrics
 
-TEST
+This is a TEST
 
 [![Build Status](https://travis-ci.org/brandonhamilton/node-metrics-influxdb.svg)](https://travis-ci.org/brandonhamilton/node-metrics-influxdb)
 [![Dependency Status](https://david-dm.org/brandonhamilton/node-metrics-influxdb.svg)](https://david-dm.org/brandonhamilton/node-metrics-influxdb)
