@@ -184,12 +184,12 @@ The <code>http</code> and <code>https</code> protocols accept the following addi
     <td><code>200</code></td>
     <td>http Timeout ms</td>
   </tr>
-    <tr>
-      <th>httpAgent</th>    
-      <td>object</td>
-      <td><code>{}</code></td>
-      <td>https Agent configuration</td>
-    </tr>
+  <tr>
+    <th>httpAgent</th>    
+    <td>object</td>
+    <td><code>undefined</code></td>
+    <td>https Agent configuration</td>
+  </tr>
 </table>
 
 </table>
